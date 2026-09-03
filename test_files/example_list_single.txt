@@ -1,0 +1,5 @@
+###------###
+Item: Game 1,
+Original Price: 10.00$,
+Discount Amount: 0.0%
+###------###

@@ -1,0 +1,15 @@
+###------###
+Item: Game 1,
+Original Price: 10.00$,
+Discount Amount: 0.0%
+###------###
+###------###
+Item: Game 2,
+Original Price: 20.00$,
+Discount Amount: 50.0%
+###------###
+###------###
+Item: Game 3,
+Original Price: 30.00$,
+Discount Amount: 25.0%
+###------###

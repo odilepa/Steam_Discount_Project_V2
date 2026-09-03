@@ -3,16 +3,16 @@
 ## Requirements:
 
 ### V2.0: 
-1. Add new games
-2. Remeber stored games
-3. Delete bought or disinterested games
-4. Show the list of all games stored
-5. Clear existing list
-6. Create a list of recomendations based on budget and preferences
+1. Add new games (done)
+2. Remeber stored games (done)
+3. Delete bought or disinterested games (done)
+4. Show the list of all games stored (done)
+5. Clear existing list (done)
+6. Create a list of recomendations based on budget and preferences (done)
 
 ### V2.1:
 1. Connect to the SteamDB API, to automatically get results
-2. Add a UI component
+2. Add a GUI component
 3. Add a optional preference value to games
 4. Creation of multiple lists
 
