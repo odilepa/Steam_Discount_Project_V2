@@ -56,7 +56,9 @@ def test_generation_of_lists():
                         "example_list_2.txt", # 4
                         "example_list_3.txt", # 5
                         "example_list_4.txt", # 6
-                        "example_list_5.txt"] # 7
+                        "example_list_5.txt", # 7 
+                        "example_list_preferences.txt", # 8
+                        ]
     results_list = [[], # 1
                     [Game("Game 1", 10.0, 0)], # 2
                     [Game("Game 1", 10.0, 0.5)], # 3
@@ -66,7 +68,10 @@ def test_generation_of_lists():
                     [Game("Game 1", 4.0, 0.5), Game("Game 3", 2.5, 0.2)], # 7
                     [Game("Game 1", 10.0, 0.6)], # 8
                     [Game("Game 2", 3.0, 0.5), Game("Game 3", 3.0, 0.5)], # 9
-                    [Game("Game 1", 10.0, 0.9), Game("Game 2", 8.0, 0.8), Game("Game 3", 6.0, 0.5), Game("Game 4", 16.0, 0.3), Game("Game 5", 9.0, 0.0)] # 10
+                    [Game("Game 1", 10.0, 0.9), Game("Game 2", 8.0, 0.8), Game("Game 3", 6.0, 0.5), Game("Game 4", 16.0, 0.3), Game("Game 5", 9.0, 0.0)], # 10
+                    [Game("Game 1", 3.0, 0.1, 1.1)], # 11
+                    [Game("Game 1", 3.0, 0.1, 1.1), Game("Game 3", 2.0, 0.1, 1.0)], # 12
+                    [Game("Game 100", 1000.0, 0.9, 1.5)] # 13
                     ]
     test_list = [{"games_file": 1, "budget": 10, "type": TYPE_DISCOUNT, "expected_results": 1, "expected_budget": 0, "expected_score":0}, # 1
                  {"games_file": 2, "budget": 5, "type": TYPE_DISCOUNT, "expected_results": 1, "expected_budget": 0, "expected_score":0}, # 2
@@ -83,16 +88,30 @@ def test_generation_of_lists():
                  {"games_file": 6, "budget": 5, "type": TYPE_DISCOUNT, "expected_results": 9, "expected_budget": 3.0, "expected_score":1.0}, # 13
                  {"games_file": 6, "budget": 5, "type": TYPE_SAVED_DISCOUNT, "expected_results": 8, "expected_budget": 4.0, "expected_score":6.0}, # 14
                  {"games_file": 6, "budget": 5, "type": TYPE_HYBRID_PRICE, "expected_results": 8, "expected_budget": 4.0, "expected_score":3.6}, # 15
-                 {"games_file": 7, "budget": 100, "type": TYPE_DISCOUNT, "expected_results": 10, "expected_budget": 25.8, "expected_score":2.51}] # 16
+                 {"games_file": 7, "budget": 100, "type": TYPE_DISCOUNT, "expected_results": 10, "expected_budget": 25.8, "expected_score":2.51}, # 16
+                 {"games_file": 8, "budget": 4.0, "type": TYPE_SAVED_DISCOUNT, "expected_results": 11, "expected_budget": 2.7, "expected_score":0.33}, # 17
+                 {"games_file": 8, "budget": 6.0, "type": TYPE_SAVED_DISCOUNT, "expected_results": 12, "expected_budget": 4.5, "expected_score":0.53}, # 18
+                 {"games_file": 8, "budget": 100, "type": TYPE_HYBRID_PRICE, "expected_results": 13, "expected_budget": 100.0, "expected_score":1215.0}, # 19
+                 {"games_file": 8, "budget": 100, "type": TYPE_DISCOUNT, "expected_results": 13, "expected_budget": 100.0, "expected_score":1.35} # 20
+                 ]
     mp.game_list_clear()
     for test_case in test_list:
         # print(f"Running test case: {test_case}")
         test_file = f"{TEST_FOLDER}{base_lists_files[test_case['games_file'] - 1]}"
         mp.read_game_list(test_file)
+        # DEBUG
+        # for game in mp.return_game_list():
+        #     print(f"Game: {game}")
+        #     print(game.score_self(test_case['type']))
         generated_list, total_budget, total_score = mp.create_list(test_case['budget'], test_case['type'])
+        # DEBUG
         # print(f"Generated list: {generated_list}")
+        for game in generated_list:
+            print(f"Game: {game}")
+            print(game.score_self(test_case['type']))
         # print(f"Generated list: {results_list[test_case['expected_results'] - 1]}")
         assert generated_list == results_list[test_case['expected_results'] - 1], f"Expected {results_list[test_case['expected_results'] - 1]} games, but got {generated_list}"
         assert total_budget == pytest.approx(test_case['expected_budget'], rel=1e-2), f"Expected budget {test_case['expected_budget']}, but got {total_budget}"
         assert total_score == pytest.approx(test_case['expected_score'], rel=1e-2), f"Expected score {test_case['expected_score']}, but got {total_score}"
+        print(f"Test case {test_case} passed.")
         mp.game_list_clear()

@@ -32,11 +32,16 @@ def read_game_list(filename = "game_list.txt"):
             # Iterate trough the list of game strings, and add each one to the game list as a Game object
             for raw_item in raw_list:
                 lines = raw_item.strip().split("\n")
-                # print(lines)
+                # Separate readings
                 title = lines[0].split(": ")[1].strip(",")
                 original_price = lines[1].split(": ")[1].strip("$,")
-                discount = lines[2].split(": ")[1].strip("%")
-                game = Game(title, float(original_price), float(discount))
+                discount = lines[2].split(": ")[1].strip("%,")
+                if len(lines) > 3:
+                    preference = lines[3].split(": ")[1].strip("%")
+                else:
+                    preference = "100.0"
+                # Create a new game object and add it to the game list
+                game = Game(title, float(original_price), float(discount), float(preference) * 0.01)
                 game_list.append(game)
     # If the file is not found, print the message and start with an empty list
     except FileNotFoundError:
@@ -67,8 +72,9 @@ def add_item():
     title = input("Enter the title of the game: ")
     original_price = float(input("Enter the original price of the game: "))
     discount = float(input("Enter the discount (as a decimal or percentage): "))
+    preference = float(input("Enter the preference rate of this item (as a decimal, default is 1.0): ") or 1.0)
     
-    game = Game(title, original_price, discount)
+    game = Game(title, original_price, discount, preference)
     print(game)
     
     game_list.append(game)
@@ -80,11 +86,11 @@ def order_list_by_price():
 # Organizes the list by score, from highest to lowest
 def order_list_by_score(type_score):
     if type_score == TYPE_SAVED_DISCOUNT:
-        return sorted(game_list, key=lambda game: game.return_saved_discount(), reverse=True)
+        return sorted(game_list, key=lambda game: game.score_self(TYPE_SAVED_DISCOUNT), reverse=True)
     elif type_score == TYPE_HYBRID_PRICE:
-        return sorted(game_list, key=lambda game: game.return_hybrid_price(), reverse=True)
+        return sorted(game_list, key=lambda game: game.score_self(TYPE_HYBRID_PRICE), reverse=True)
     else:
-        return sorted(game_list, key=lambda game: game.return_discount(), reverse=True)
+        return sorted(game_list, key=lambda game: game.score_self(TYPE_DISCOUNT), reverse=True)
 
 # Iterates through the list of games, and selects the nex item based on the remaining budget an type of score, until the end where it return the full list and score
 def list_iteration_v1(remaining_budget, ordered_list, dna_list, iteration_index, current_score, type_list):
